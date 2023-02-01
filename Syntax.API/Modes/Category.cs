@@ -11,7 +11,9 @@ public class Category
 
     public string? Icon { get; set; }
     public string? Description { get; set; }
+
     public User User { get; set; }
+    public List<Transaction> Transactions { get; set; }
 
     public string? Type { get; set; }
 }

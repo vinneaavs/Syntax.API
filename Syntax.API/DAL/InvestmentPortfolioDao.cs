@@ -2,7 +2,7 @@
 
 namespace Syntax.API.DAL
 {
-    public class InvestmentPortfolioDao:GenericOp<InvestmentPortfolio>
+    public class InvestmentPortfolioDao:GenericOp<Portfolio>
     {
         public InvestmentPortfolioDao(ApplicationDbContext context) : base(context) { }
     }

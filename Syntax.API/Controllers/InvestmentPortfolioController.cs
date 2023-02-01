@@ -17,7 +17,7 @@ namespace Syntax.API.Controllers
         }
         // GET: api/<InvestmentPortfolioController>
         [HttpGet]
-        public IEnumerable<InvestmentPortfolio> Get()
+        public IEnumerable<Portfolio> Get()
         {
             return investmentPortfolioDao.List();
         }

@@ -1,8 +1,11 @@
+using Syntax.API.DI;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 
-
+ConfigurationManager config = builder.Configuration;
 // Add services to the container.
+builder.Services.AddInfStructDB(config);
 
 builder.Services.AddControllers();
 

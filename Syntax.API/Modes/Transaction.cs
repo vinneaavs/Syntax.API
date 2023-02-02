@@ -11,7 +11,6 @@ public class Transaction
     public string? Description { get; set; }
     public DateTime Date { get; set; } = DateTime.Now;
     public string? Type { get; set; }
-
     public User User { get; set; }
     public TransactionClass Category { get; set; }
 

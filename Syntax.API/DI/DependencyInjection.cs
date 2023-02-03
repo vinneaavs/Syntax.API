@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
-using Syntax.API.Data;
-using Syntax.Models;
+using Syntax.API.Context;
 
 namespace Syntax.API.DI
 {

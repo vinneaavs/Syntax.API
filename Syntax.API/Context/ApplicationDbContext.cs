@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Syntax.Models;
 
-namespace Syntax.Models;
+namespace Syntax.API.Context;
 
 public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     { }
-    
+
 
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<TransactionClass> TransactionClasses { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Syntax.Models;
 
-namespace Syntax.API.Data
+namespace Syntax.API.Context
 {
     public class DbInitializer
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Syntax.Models;
+using Syntax.API.Context;
 
 namespace Syntax.API.DAL
 {

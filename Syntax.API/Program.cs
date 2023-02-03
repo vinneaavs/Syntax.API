@@ -8,6 +8,11 @@ ConfigurationManager config = builder.Configuration;
 builder.Services.AddInfStructDB(config);
 
 builder.Services.AddControllers();
+builder.Services.AddInfraStructureDb(config);
+
+builder.Services.AddCors(policy =>
+    policy.AddDefaultPolicy(p =>
+        p.WithOrigins("*").AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
 

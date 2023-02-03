@@ -29,7 +29,7 @@ namespace Syntax.API.DAL
         }
         public T? FindById(int id) 
         {
-            return _context.Set<T>().Find();
+            return _context.Set<T>().Find(id);
         }
     }
 }

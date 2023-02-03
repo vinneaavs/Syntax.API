@@ -39,7 +39,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<AssetClassController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public AssetClass EditAssetClass(AssetClass assetClass)
         {
             _assetClassDao.Operation(assetClass, OperationType.Modified);
@@ -47,7 +47,7 @@ namespace Syntax.API.Controllers
         }
 
         // DELETE api/<AssetClassController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult DeleteAssetClass(AssetClass assetClass)
         {
             try

@@ -13,9 +13,9 @@ namespace Syntax.Models
         [Column(TypeName = "nvarchar(50)")] public string? Email { get; set; }
         [Column(TypeName = "nvarchar(50)")] public string? Password { get; set; }
         [Column(TypeName = "nvarchar(10)")] public string? Role { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastAccessDate { get; set;}
-        public bool IsEmailConfirmed { get; set;}
-        
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public DateTime? LastAccessDate { get; set; }
+        public bool? IsEmailConfirmed { get; set; }
+
     }
 }

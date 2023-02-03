@@ -65,7 +65,7 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AssetsClass");
+                    b.ToTable("AssetsClasses");
                 });
 
             modelBuilder.Entity("Syntax.Models.AssetPortfolio", b =>
@@ -100,7 +100,7 @@ namespace Syntax.API.Migrations
 
                     b.HasIndex("PortfolioId");
 
-                    b.ToTable("Portfolios");
+                    b.ToTable("AssetPortfolios");
                 });
 
             modelBuilder.Entity("Syntax.Models.Portfolio", b =>
@@ -124,7 +124,7 @@ namespace Syntax.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Investments");
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("Syntax.Models.Transaction", b =>
@@ -135,19 +135,19 @@ namespace Syntax.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TransactionClassId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Value")
@@ -155,7 +155,7 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("TransactionClassId");
 
                     b.HasIndex("UserId");
 
@@ -176,14 +176,14 @@ namespace Syntax.API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("TransactionClasses");
                 });
 
             modelBuilder.Entity("Syntax.Models.User", b =>
@@ -200,10 +200,10 @@ namespace Syntax.API.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsEmailConfirmed")
+                    b.Property<bool?>("IsEmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("LastAccessDate")
+                    b.Property<DateTime?>("LastAccessDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -261,19 +261,17 @@ namespace Syntax.API.Migrations
 
             modelBuilder.Entity("Syntax.Models.Transaction", b =>
                 {
-                    b.HasOne("Syntax.Models.TransactionClass", "Category")
+                    b.HasOne("Syntax.Models.TransactionClass", "TransactionClass")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("TransactionClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Syntax.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Category");
+                    b.Navigation("TransactionClass");
 
                     b.Navigation("User");
                 });
@@ -282,9 +280,7 @@ namespace Syntax.API.Migrations
                 {
                     b.HasOne("Syntax.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

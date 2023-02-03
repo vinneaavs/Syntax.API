@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Syntax.API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class NewDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AssetsClass",
+                name: "AssetsClasses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -20,7 +20,7 @@ namespace Syntax.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssetsClass", x => x.Id);
+                    table.PrimaryKey("PK_AssetsClasses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,8 +34,8 @@ namespace Syntax.API.Migrations
                     Password = table.Column<string>(type: "nvarchar(50)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(10)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastAccessDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false)
+                    LastAccessDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,36 +57,15 @@ namespace Syntax.API.Migrations
                 {
                     table.PrimaryKey("PK_Assets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Assets_AssetsClass_AssetClassId",
+                        name: "FK_Assets_AssetsClasses_AssetClassId",
                         column: x => x.AssetClassId,
-                        principalTable: "AssetsClass",
+                        principalTable: "AssetsClasses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Investments",
+                name: "Portfolios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -97,39 +76,36 @@ namespace Syntax.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Investments", x => x.Id);
+                    table.PrimaryKey("PK_Portfolios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Investments_Users_UserId",
+                        name: "FK_Portfolios_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "TransactionClasses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_TransactionClasses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_TransactionClasses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Portfolios",
+                name: "AssetPortfolios",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -143,20 +119,59 @@ namespace Syntax.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Portfolios", x => x.Id);
+                    table.PrimaryKey("PK_AssetPortfolios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Portfolios_Assets_AssetId",
+                        name: "FK_AssetPortfolios_Assets_AssetId",
                         column: x => x.AssetId,
                         principalTable: "Assets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Portfolios_Investments_PortfolioId",
+                        name: "FK_AssetPortfolios_Portfolios_PortfolioId",
                         column: x => x.PortfolioId,
-                        principalTable: "Investments",
+                        principalTable: "Portfolios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: true),
+                    TransactionClassId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_TransactionClasses_TransactionClassId",
+                        column: x => x.TransactionClassId,
+                        principalTable: "TransactionClasses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetPortfolios_AssetId",
+                table: "AssetPortfolios",
+                column: "AssetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssetPortfolios_PortfolioId",
+                table: "AssetPortfolios",
+                column: "PortfolioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_AssetClassId",
@@ -164,35 +179,30 @@ namespace Syntax.API.Migrations
                 column: "AssetClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categories_UserId",
-                table: "Categories",
+                name: "IX_Portfolios_UserId",
+                table: "Portfolios",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Investments_UserId",
-                table: "Investments",
+                name: "IX_TransactionClasses_UserId",
+                table: "TransactionClasses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Portfolios_AssetId",
-                table: "Portfolios",
-                column: "AssetId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Portfolios_PortfolioId",
-                table: "Portfolios",
-                column: "PortfolioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_CategoryId",
+                name: "IX_Transactions_TransactionClassId",
                 table: "Transactions",
-                column: "CategoryId");
+                column: "TransactionClassId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_UserId",
+                table: "Transactions",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Portfolios");
+                name: "AssetPortfolios");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -201,13 +211,13 @@ namespace Syntax.API.Migrations
                 name: "Assets");
 
             migrationBuilder.DropTable(
-                name: "Investments");
+                name: "Portfolios");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "TransactionClasses");
 
             migrationBuilder.DropTable(
-                name: "AssetsClass");
+                name: "AssetsClasses");
 
             migrationBuilder.DropTable(
                 name: "Users");

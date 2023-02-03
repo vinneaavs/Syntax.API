@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Syntax.API.DAL;
+using Syntax.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,56 @@ namespace Syntax.API.Controllers
     [ApiController]
     public class TransactionClassController : ControllerBase
     {
+        private readonly TransactionClassDao _transactionClassDao;
+        public TransactionClassController(ApplicationDbContext _context)
+        {
+            _transactionClassDao = new TransactionClassDao(_context);
+        }
         // GET: api/<TransactionClassController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<TransactionClass> GetTransactionClasses()
         {
-            return new string[] { "value1", "value2" };
+            return _transactionClassDao.List().ToList();
         }
 
         // GET api/<TransactionClassController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public TransactionClass GetTransactionClass(int id)
         {
-            return "value";
+            return _transactionClassDao.FindById(id);
         }
 
         // POST api/<TransactionClassController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public TransactionClass CreateTransactionClass(TransactionClass transactionClass)
         {
+            _transactionClassDao.Operation(transactionClass, OperationType.Added);
+            return transactionClass;
         }
 
         // PUT api/<TransactionClassController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public TransactionClass EditTransactionClass(TransactionClass transactionClass)
         {
+            _transactionClassDao.Operation(transactionClass, OperationType.Modified);
+            return transactionClass;
         }
 
         // DELETE api/<TransactionClassController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public IActionResult Delete(TransactionClass transactionClass)
         {
+            try
+            {
+                _transactionClassDao.Operation(transactionClass, OperationType.Deleted);
+                return Ok("TransactionClass excluida com sucesso !");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+
         }
     }
 }

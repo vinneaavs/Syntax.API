@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Syntax.API.DAL;
+using Syntax.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +10,55 @@ namespace Syntax.API.Controllers
     [ApiController]
     public class AssetController : ControllerBase
     {
+        private readonly AssetDao _assetDao;
+        private AssetController(ApplicationDbContext _context)
+        {
+            _assetDao = new AssetDao(_context);
+        }
         // GET: api/<AssetController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Asset> GetAssets()
         {
-            return new string[] { "value1", "value2" };
+            return _assetDao.List().ToList();
         }
 
         // GET api/<AssetController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Asset GetAsset(int id)
         {
-            return "value";
+            return _assetDao.FindById(id);
         }
 
         // POST api/<AssetController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Asset CreateAsset(Asset asset)
         {
+            _assetDao.Operation(asset, OperationType.Added);
+            return asset;
         }
 
         // PUT api/<AssetController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public Asset EditAsset(Asset asset)
         {
+            _assetDao.Operation(asset, OperationType.Modified);
+            return asset;
         }
 
         // DELETE api/<AssetController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteAsset(Asset asset)
         {
+            try
+            {
+                _assetDao.Operation(asset, OperationType.Deleted);
+                return Ok("Deletado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

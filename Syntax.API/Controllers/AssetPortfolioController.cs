@@ -8,12 +8,12 @@ namespace Syntax.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InvestmentPortfolioController : ControllerBase
+    public class AssetPortfolioController : ControllerBase
     {
-        private readonly InvestmentPortfolioDao investmentPortfolioDao;
-        public InvestmentPortfolioController(ApplicationDbContext context)
+        private readonly AssetPorttifolioDao investmentPortfolioDao;
+        public AssetPortfolioController(ApplicationDbContext context)
         {
-            investmentPortfolioDao = new InvestmentPortfolioDao(context);
+            investmentPortfolioDao = new AssetPorttifolioDao(context);
         }
         // GET: api/<InvestmentPortfolioController>
         [HttpGet]

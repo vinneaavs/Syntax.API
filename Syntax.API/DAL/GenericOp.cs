@@ -3,7 +3,7 @@ using Syntax.Models;
 
 namespace Syntax.API.DAL
 {
-    public enum Operation
+    public enum OperationType
     {
         Detached = 0,
         Unchanged = 1,
@@ -18,7 +18,7 @@ namespace Syntax.API.DAL
         {
             this._context = _context;
         }
-        private void Operation(T item, Operation op)
+        public void Operation(T item, OperationType op)
         {
             _context.Entry<T>(item).State = (EntityState)op;
             _context.SaveChanges();

@@ -1,5 +1,5 @@
 ﻿using Syntax.API.Context;
-using Syntax.Models;
+using Syntax.API.Models;
 
 namespace Syntax.API.DAL
 {

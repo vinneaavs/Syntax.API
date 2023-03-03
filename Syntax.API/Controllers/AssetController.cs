@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
-using Syntax.Models;
+using Syntax.API.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Syntax.API.Controllers
 {
@@ -12,9 +11,10 @@ namespace Syntax.API.Controllers
     public class AssetController : ControllerBase
     {
         private readonly AssetDao _assetDao;
-        private AssetController(ApplicationDbContext _context)
+        public AssetController(ApplicationDbContext _context)
         {
             _assetDao = new AssetDao(_context);
+
         }
         // GET: api/<AssetController>
         [HttpGet]
@@ -47,7 +47,7 @@ namespace Syntax.API.Controllers
         }
 
         // DELETE api/<AssetController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult DeleteAsset(Asset asset)
         {
             try

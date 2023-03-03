@@ -1,10 +1,18 @@
-﻿using Syntax.API.Context;
-using Syntax.Models;
+﻿using Syntax.API.Models;
+using Syntax.Auth.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ApplicationUser = Syntax.Auth.Data.ApplicationUser;
 
 namespace Syntax.API.DAL
 {
-    public class UserDao : GenericOp<User>
+
+    public class UserDao : GenericIdentity<ApplicationUser>
     {
-        public UserDao(ApplicationDbContext context) : base(context) { }
+        public UserDao(IdentityContext context) : base(context) { }
     }
+
 }

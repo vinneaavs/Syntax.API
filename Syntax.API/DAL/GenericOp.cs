@@ -25,7 +25,7 @@ namespace Syntax.API.DAL
         }
         public IEnumerable<T> List()
         {
-            return _context.Set<T>().ToList();
+            return _context.Set<T>();
         }
         public T? FindById(int id) 
         {

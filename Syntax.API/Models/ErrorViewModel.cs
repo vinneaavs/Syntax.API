@@ -1,4 +1,4 @@
-﻿namespace Syntax.Models;
+﻿namespace Syntax.API.Models;
 
 public class ErrorViewModel
 {

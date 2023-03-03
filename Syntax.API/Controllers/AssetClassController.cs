@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
-using Syntax.Models;
+using Syntax.API.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,7 +22,7 @@ namespace Syntax.API.Controllers
         [HttpGet]
         public IEnumerable<AssetClass> GetAssets()
         {
-            return _assetClassDao.List().ToList();
+            return _assetClassDao.List();
         }
 
         // GET api/<AssetClassController>/5
@@ -49,6 +50,7 @@ namespace Syntax.API.Controllers
 
         // DELETE api/<AssetClassController>/5
         [HttpDelete]
+        [Authorize]
         public IActionResult DeleteAssetClass(AssetClass assetClass)
         {
             try

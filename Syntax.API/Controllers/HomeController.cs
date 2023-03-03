@@ -10,9 +10,19 @@ namespace Syntax.API.Controllers
     {
         // GET: api/<HomeController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "ta", "no", "ar" };
+            string a = "\t\t\t\t\t\t\t\t\t\t\t\t\t ____              _         " +
+                "        _    ____ ___ \r\n\t\t\t\t\t\t\t\t\t\t\t\t\t/ ___| _   _" +
+                " _ __ | |_" +
+                " __ ___  __   / \\  |  _ \\_ _|\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\\___ " +
+                "\\| | | | '_ \\| __/ _` \\ \\/ /  / _ \\ | |_) | | \r\n\t\t\t\t\t\t\t\t" +
+                "\t\t\t\t\t ___) | |_| | | | | || (_| |>  <  / ___ \\|  __/| | \r\n" +
+                "\t\t\t\t\t\t\t\t\t\t\t\t\t|____/ \\__, |_| |_|\\__\\__,_/_/\\_\\/_/" +
+                "   \\" +
+                "_\\_|  |___|\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t       |___/             " +
+                "                          \r\n";
+            return a;
         }
 
         // GET api/<HomeController>/5

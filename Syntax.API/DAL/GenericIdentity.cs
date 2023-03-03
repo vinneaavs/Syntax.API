@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
 using Syntax.Auth.Data;
+using Syntax.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,9 @@ namespace Syntax.API.DAL
         {
             return _context.Set<T>().ToList();
         }
-        public T? FindById(int id)
+        public ApplicationUser? FindById(int id)
         {
-            return _context.Set<T>().Find(id);
+            return _context.Users.FirstOrDefault(x => x.IdApp == id);
         }
     }
 

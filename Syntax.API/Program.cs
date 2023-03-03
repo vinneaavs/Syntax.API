@@ -8,8 +8,9 @@ ConfigurationManager config = builder.Configuration;
 builder.Services.AddControllers();
 
 #region DI
-builder.Services.AddInfStructDB(config);
 builder.Services.AddAuthService(config);
+
+builder.Services.AddInfStructDB(config);
 builder.Services.AddSwaggerService();
 #endregion
 

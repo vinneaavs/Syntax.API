@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
@@ -48,7 +49,7 @@ namespace Syntax.API.Controllers
         }
 
         // DELETE api/<InvestmentPortfolioController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public IActionResult DeleteAssetPortfolio(AssetPortfolio assetPortfolio)
         {
             try
@@ -60,6 +61,23 @@ namespace Syntax.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult DeleteAssetPortifolioById(int id)
+        {
+            try
+            {
+                var assetPortifolio = _assetPortifolioDao.FindById(id);
+
+                _assetPortifolioDao.Operation(assetPortifolio!, OperationType.Deleted);
+                return Ok("Deletado com sucesso !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
     }
 }

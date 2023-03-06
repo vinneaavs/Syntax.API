@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
@@ -14,7 +15,6 @@ namespace Syntax.API.Controllers
         public AssetController(ApplicationDbContext _context)
         {
             _assetDao = new AssetDao(_context);
-
         }
         // GET: api/<AssetController>
         [HttpGet]
@@ -60,6 +60,23 @@ namespace Syntax.API.Controllers
 
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult DeleteAssetById(int id)
+        {
+            try
+            {
+                var asset = _assetDao.FindById(id);
+
+                _assetDao.Operation(asset!, OperationType.Deleted);
+                return Ok("Deletado com sucesso !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
     }
 }

@@ -63,6 +63,23 @@ namespace Syntax.API.Controllers
                 return BadRequest(ex);
             }
 
+        }// DELETE api/<AssetClassController>/5
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult DeleteAssetClassById(int id)
+        {
+            try
+            {
+                var assetClass =_assetClassDao.FindById(id);
+
+                _assetClassDao.Operation(assetClass!, OperationType.Deleted);
+                return Ok("Deletado com sucesso !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
     }
 }

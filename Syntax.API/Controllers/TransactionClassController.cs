@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
@@ -48,7 +49,7 @@ namespace Syntax.API.Controllers
 
         // DELETE api/<TransactionClassController>/5
         [HttpDelete]
-        public IActionResult Delete(TransactionClass transactionClass)
+        public IActionResult DeleteTransactionClass(TransactionClass transactionClass)
         {
             try
             {
@@ -59,6 +60,23 @@ namespace Syntax.API.Controllers
             {
 
                 return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult DeleteTransactionClassById(int id)
+        {
+            try
+            {
+                var transactionClass = _transactionClassDao.FindById(id);
+
+                _transactionClassDao.Operation(transactionClass!, OperationType.Deleted);
+                return Ok("Deletado com sucesso !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
 
         }

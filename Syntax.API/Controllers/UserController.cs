@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
@@ -60,8 +61,8 @@ namespace Syntax.API.Controllers
             {
                 return Unauthorized(result);
             }
-           
-            
+
+
         }
         [HttpGet]
         public IEnumerable<ApplicationUser> GetAllUsers()
@@ -94,7 +95,7 @@ namespace Syntax.API.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete]
-        public IActionResult Delete(ApplicationUser user)
+        public IActionResult DeleteUser(ApplicationUser user)
         {
             try
             {
@@ -105,6 +106,23 @@ namespace Syntax.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public IActionResult DeleteUserById(int id)
+        {
+            try
+            {
+                var user = _userDao.FindById(id);
+
+                _userDao.Operation(user!, OperationType.Deleted);
+                return Ok("Deletado com sucesso !");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
     }
 }

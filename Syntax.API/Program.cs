@@ -53,6 +53,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 #endregion
 
+app.UseCors();
 
 app.MapControllers();
 

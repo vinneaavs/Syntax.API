@@ -24,12 +24,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Define a porta que será exposta para acesso externo
 EXPOSE 80
 
-# Inicie o contêiner de autenticação primeiro
+# Inicia o container Auth
 CMD ["dotnet", "Syntax.Auth.dll"]
-# Em seguida, inicie o contêiner de aplicativo
+# Inicia o container de Application
 CMD ["dotnet", "Syntax.Application.dll"]
-# Finalmente, inicie o contêiner da API
+# Inicia o container da API
 CMD ["dotnet", "Syntax.API.dll"]

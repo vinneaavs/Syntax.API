@@ -15,8 +15,11 @@ namespace Syntax.Auth.Data
     public class ApplicationUser : IdentityUser
     {
 
-        public int IdApp { get; set; }
+        //public int IdApp { get; set; }
+        public string? Name { get; set; }
+        public string? LastName { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
+        public string? Role { get; set; }
     }
 
 }

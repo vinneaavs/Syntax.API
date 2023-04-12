@@ -11,6 +11,7 @@ using Syntax.Application.Interfaces.Services;
 using Syntax.Auth.Configurations;
 using Syntax.Auth.Data;
 using Syntax.Auth.Services;
+using System.Configuration;
 using System.Text;
 
 namespace Syntax.API.DI
@@ -37,16 +38,17 @@ namespace Syntax.API.DI
 
             return services;
         }
-        public static IServiceCollection AddAuthService(this IServiceCollection services, IConfiguration configuration)
+
+        public static async Task<IServiceCollection> AddAuthServiceAsync(this IServiceCollection services, IConfiguration configuration)
         {
 
-            //IDENTITY SERVICE / CONNECTIONSTRING
             services.AddDbContext<IdentityContext>(options => options
-              .UseSqlServer(configuration.GetConnectionString("IdentityConnections"), b => b.MigrationsAssembly("Syntax.API")));
-            services.AddDefaultIdentity<Auth.Data.ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddDefaultTokenProviders();
+     .UseSqlServer(configuration.GetConnectionString("IdentityConnections"), b => b.MigrationsAssembly("Syntax.API")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<IdentityContext>()
+                    .AddDefaultTokenProviders();
+
             services.AddScoped<IIdentityService, IdentityService>();
 
             //TOKEN
@@ -98,12 +100,47 @@ namespace Syntax.API.DI
 
             }).AddJwtBearer(op =>
             {
-                op.TokenValidationParameters = tokenValidationParameters;
+                op.RequireHttpsMetadata = false;
+                op.SaveToken = true;
+                op.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtOptions:SecurityKey"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
             });
 
 
+            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
+
+            services.AddTransient<IJwtTokenValidator, JwtTokenValidator>();
+
+
+            //services.AddMvc(options =>
+            //{
+            //    options.Filters.Add(typeof(JwtAuthenticationFilter));
+            //});
+
             return services;
 
+        }
+
+
+        public static async Task InitializeRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var rolesNames = new string[] { "Administrator", "User", "Premium" };
+
+            foreach (var roleName in rolesNames)
+            {
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
         }
         public static IServiceCollection AddSwaggerService(this IServiceCollection services)
         {
@@ -135,8 +172,14 @@ namespace Syntax.API.DI
                         new List<string>()
                     }
                 });
-                
+
             });
+            var serviceProvider = services.BuildServiceProvider();
+
+            #region CASO FAÇA UPDATEDATABSE OU MIGRATION COMENTAR
+            InitializeRoles(serviceProvider).Wait();
+            #endregion
+
 
             return services;
         }

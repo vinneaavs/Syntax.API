@@ -8,6 +8,7 @@ using Syntax.API.Models;
 
 namespace Syntax.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetClassController : ControllerBase

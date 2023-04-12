@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
@@ -10,6 +11,7 @@ using Syntax.Application.DTOs.Response;
 using Syntax.Application.Interfaces.Services;
 using Syntax.Auth.Data;
 
+
 namespace Syntax.API.Controllers
 {
     [Route("api/[controller]")]
@@ -18,11 +20,14 @@ namespace Syntax.API.Controllers
     {
         private IIdentityService _identityService;
         private readonly UserDao _userDao;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(IIdentityService identityService, IdentityContext _context)
+
+        public UserController(IIdentityService identityService, IdentityContext _context, UserManager<ApplicationUser> userManager)
         {
             _identityService = identityService;
-            _userDao = new UserDao(_context);
+            _userManager = userManager;
+            _userDao = new UserDao(_context, userManager);
 
         }
 
@@ -45,6 +50,7 @@ namespace Syntax.API.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<ActionResult<UserLoginResponse>> Login(UserLoginRequest userLoginRequest)
         {
@@ -72,9 +78,10 @@ namespace Syntax.API.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public ApplicationUser GetUserById(int id)
+        public ApplicationUser GetUserById(string id)
         {
-            return _userDao.FindById(id);
+            var user = _userDao.FindById(id);
+            return user;
         }
 
         // POST api/<UserController>
@@ -100,7 +107,7 @@ namespace Syntax.API.Controllers
             try
             {
                 _userDao.Operation(user, OperationType.Deleted);
-                return Ok($"Usuario {user.UserName} - {user.IdApp} Deletado com Sucesso");
+                return Ok($"Usuario {user.UserName} - {user.Id} Deletado com Sucesso");
             }
             catch (Exception ex)
             {
@@ -109,7 +116,7 @@ namespace Syntax.API.Controllers
         }
         [HttpDelete("{id}")]
         [Authorize]
-        public IActionResult DeleteUserById(int id)
+        public IActionResult DeleteUserById(string id)
         {
             try
             {

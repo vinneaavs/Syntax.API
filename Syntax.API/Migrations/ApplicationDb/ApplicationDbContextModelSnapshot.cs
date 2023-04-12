@@ -8,7 +8,7 @@ using Syntax.API.Context;
 
 #nullable disable
 
-namespace Syntax.API.Migrations
+namespace Syntax.API.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -17,12 +17,12 @@ namespace Syntax.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "6.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Syntax.Models.Asset", b =>
+            modelBuilder.Entity("Syntax.API.Models.Asset", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,11 +30,14 @@ namespace Syntax.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AssetClassId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdAssetClass")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -44,12 +47,10 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssetClassId");
-
                     b.ToTable("Assets");
                 });
 
-            modelBuilder.Entity("Syntax.Models.AssetClass", b =>
+            modelBuilder.Entity("Syntax.API.Models.AssetClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,6 +59,9 @@ namespace Syntax.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -68,7 +72,7 @@ namespace Syntax.API.Migrations
                     b.ToTable("AssetsClasses");
                 });
 
-            modelBuilder.Entity("Syntax.Models.AssetPortfolio", b =>
+            modelBuilder.Entity("Syntax.API.Models.AssetPortfolio", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,13 +80,13 @@ namespace Syntax.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AssetId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PortfolioId")
+                    b.Property<int>("IdAsset")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPortfolio")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PurchasePrice")
@@ -91,19 +95,15 @@ namespace Syntax.API.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssetId");
-
-                    b.HasIndex("PortfolioId");
 
                     b.ToTable("AssetPortfolios");
                 });
 
-            modelBuilder.Entity("Syntax.Models.Portfolio", b =>
+            modelBuilder.Entity("Syntax.API.Models.Portfolio", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,20 +114,18 @@ namespace Syntax.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Portfolios");
                 });
 
-            modelBuilder.Entity("Syntax.Models.Transaction", b =>
+            modelBuilder.Entity("Syntax.API.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -141,13 +139,13 @@ namespace Syntax.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TransactionClassId")
+                    b.Property<int>("IdTransactionClass")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Value")
@@ -155,14 +153,10 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TransactionClassId");
-
-                    b.HasIndex("UserId");
-
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Syntax.Models.TransactionClass", b =>
+            modelBuilder.Entity("Syntax.API.Models.TransactionClass", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -173,116 +167,79 @@ namespace Syntax.API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("TransactionClasses");
                 });
 
-            modelBuilder.Entity("Syntax.Models.User", b =>
+            modelBuilder.Entity("Syntax.Auth.Data.ApplicationUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsEmailConfirmed")
+                    b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("LastAccessDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Role")
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Syntax.Models.Asset", b =>
-                {
-                    b.HasOne("Syntax.Models.AssetClass", "AssetClass")
-                        .WithMany()
-                        .HasForeignKey("AssetClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssetClass");
-                });
-
-            modelBuilder.Entity("Syntax.Models.AssetPortfolio", b =>
-                {
-                    b.HasOne("Syntax.Models.Asset", "Asset")
-                        .WithMany()
-                        .HasForeignKey("AssetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syntax.Models.Portfolio", "Portfolio")
-                        .WithMany()
-                        .HasForeignKey("PortfolioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Asset");
-
-                    b.Navigation("Portfolio");
-                });
-
-            modelBuilder.Entity("Syntax.Models.Portfolio", b =>
-                {
-                    b.HasOne("Syntax.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Syntax.Models.Transaction", b =>
-                {
-                    b.HasOne("Syntax.Models.TransactionClass", "TransactionClass")
-                        .WithMany()
-                        .HasForeignKey("TransactionClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syntax.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("TransactionClass");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Syntax.Models.TransactionClass", b =>
-                {
-                    b.HasOne("Syntax.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
+                    b.ToTable("ApplicationUser");
                 });
 #pragma warning restore 612, 618
         }

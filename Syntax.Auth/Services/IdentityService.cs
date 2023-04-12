@@ -23,13 +23,16 @@ namespace Syntax.Auth.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtOptions _jwtOptions;
         private readonly IdentityContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IdentityContext context)
+
+        public IdentityService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IOptions<JwtOptions> jwtOptions, IdentityContext context, RoleManager<IdentityRole> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _jwtOptions = jwtOptions.Value;
             _context = context;
+            _roleManager = roleManager;
         }
         public async Task<UserRegisterResponse> RegisterUser(UserRegisterRequest userRegisterRequest)
         {
@@ -46,12 +49,20 @@ namespace Syntax.Auth.Services
                 //NÃO FUNCIONA COM USER PERSONALIZADO                
                 //await _userManager.SetLockoutEnabledAsync(applicationUser, false);
 
-                var user =  _userManager.Users.FirstOrDefault(x => x.IdApp == applicationUser.IdApp);
+                var user = _userManager.Users.FirstOrDefault(x => x.Id == applicationUser.Id);
                 if (user != null)
                 {
                     user.LockoutEnabled = user.LockoutEnabled = false;
-                    user.IdApp = user.IdApp;
-                    
+                    user.Id = user.Id;
+                    user.Name = userRegisterRequest.Name;
+                    user.LastName = userRegisterRequest.LastName;
+                    user.CreationDate = DateTime.Now;
+                    if (string.IsNullOrEmpty(userRegisterRequest.Role))
+                    {
+                        user.Role = "User";
+                    }
+                    await AddUserToRole(user.Id, userRegisterRequest.Role);
+
                     _context.SaveChanges();
                 }
 
@@ -130,14 +141,32 @@ namespace Syntax.Auth.Services
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Nbf, DateTime.Now.ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.UserName));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+            claims.Add(new Claim("Id", user.Id.ToString()));
 
             foreach (var r in roles)
             {
                 claims.Add(new Claim("roles", r));
+
             }
             return claims;
         }
 
+        public async Task AddUserToRole(string userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Failed to add user to role.");
+            }
+        }
     }
 }
 

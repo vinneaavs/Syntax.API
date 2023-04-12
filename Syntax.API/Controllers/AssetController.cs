@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
+using PagedList;
+
 
 
 namespace Syntax.API.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class AssetController : ControllerBase
@@ -16,6 +19,9 @@ namespace Syntax.API.Controllers
         {
             _assetDao = new AssetDao(_context);
         }
+
+
+
         // GET: api/<AssetController>
         [HttpGet]
         public IEnumerable<Asset> GetAssets()

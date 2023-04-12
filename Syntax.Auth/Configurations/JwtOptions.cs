@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Syntax.Auth.Configurations
 {
     public class JwtOptions
@@ -13,6 +14,8 @@ namespace Syntax.Auth.Configurations
         public string Audience { get; set; }
         public SigningCredentials SigningCredentials { get; set; }
         public int Expiration { get; set; }
+        public string SecurityKey { get; set; }
+
 
     }
 }

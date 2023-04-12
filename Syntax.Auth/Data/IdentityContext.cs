@@ -7,25 +7,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Syntax.Auth.Data
 {
-    public class IdentityContext : IdentityDbContext<ApplicationUser>
+    public class IdentityContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
-        public IdentityContext(DbContextOptions<IdentityContext> op) : base(op) { }
-
-        public DbSet<ApplicationUser> Users { get; set; }
+        public IdentityContext(DbContextOptions<IdentityContext> options)
+            : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>(b =>
-            {
-                b.Property(e => e.IdApp).ValueGeneratedOnAdd();
-            });
-            modelBuilder.Entity<ApplicationUser>().HasKey(u => u.Id);
-
-
+            // Configurações padrão do Identity
+            modelBuilder.Entity<IdentityRole>().ToTable("AspNetRoles").HasKey(x => x.Id);
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("AspNetUserRoles").HasKey(x => new { x.UserId, x.RoleId });
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("AspNetUserLogins").HasKey(x => x.UserId);
+            modelBuilder.Entity<IdentityUserToken<string>>().ToTable("AspNetUserTokens").HasKey(x => x.UserId);
+            modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims").HasKey(x => x.Id);
+            modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("AspNetRoleClaims").HasKey(x => x.Id);
         }
     }
-
-
 }

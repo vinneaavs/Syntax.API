@@ -9,9 +9,9 @@ namespace Syntax.Application.DTOs.Request
 {
     public class UserRegisterRequest
     {
+
         [Required(ErrorMessage = "O Campo {0} é Obrigatório")]
         [EmailAddress(ErrorMessage = "O Campo {0} é inválido")]
-
         public string Email { get; set; }
 
         [Required(ErrorMessage = "O Campo {0} é Obrigtório")]
@@ -20,6 +20,10 @@ namespace Syntax.Application.DTOs.Request
 
         [Compare(nameof(Password), ErrorMessage = "O conteúdo das senhas devem ser iguais !")]
         public string ReEntryPassword { get; set; }
-
+        public string? Name { get; set; }
+        public string? LastName { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
+        public string? Role { get; set; }
     }
+
 }

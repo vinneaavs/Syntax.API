@@ -33,6 +33,7 @@ namespace Syntax.API.Controllers
 
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<UserRegisterResponse>> Register(UserRegisterRequest userRegisterRequest)
         {

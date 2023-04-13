@@ -10,12 +10,14 @@ using Syntax.Application.DTOs.Request;
 using Syntax.Application.DTOs.Response;
 using Syntax.Application.Interfaces.Services;
 using Syntax.Auth.Data;
-
+using System.Security.Claims;
 
 namespace Syntax.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrator")]
+
     public class UserController : ControllerBase
     {
         private IIdentityService _identityService;
@@ -73,6 +75,7 @@ namespace Syntax.API.Controllers
         [HttpGet]
         public IEnumerable<ApplicationUser> GetAllUsers()
         {
+      
             return _userDao.List().ToList();
         }
 

@@ -16,7 +16,6 @@ builder.Services.AddInfStructDB(config);
 builder.Services.AddSwaggerService();
 #endregion
 
-
 #region CORS
 builder.Services.AddCors(policy =>
     policy.AddDefaultPolicy(p =>
@@ -45,6 +44,38 @@ builder.Services.AddMvc(options =>
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
+#region Populando dados fixos
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+    try
+    {
+        var seedUsers = services.GetRequiredService<SeedUsers>();
+        await seedUsers.StartAsync(CancellationToken.None);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+
+
+}
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+    try
+    {
+        var seedAssetClass = services.GetRequiredService<SeedAssetClass>();
+        await seedAssetClass.CreateAssetClassesAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the asset classes.");
+    }
+}
+#endregion
 
 #region SESSION
 

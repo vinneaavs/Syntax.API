@@ -41,7 +41,8 @@ namespace Syntax.Auth.Services
             {
                 Email = userRegisterRequest.Email,
                 UserName = userRegisterRequest.Email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Role = userRegisterRequest.Role
             };
             var result = await _userManager.CreateAsync(applicationUser, userRegisterRequest.Password);
             if (result.Succeeded)
@@ -57,13 +58,17 @@ namespace Syntax.Auth.Services
                     user.Name = userRegisterRequest.Name;
                     user.LastName = userRegisterRequest.LastName;
                     user.CreationDate = DateTime.Now;
+                    user.Role= userRegisterRequest.Role;
+                    user.IsEmailConfirmed = true;
                     if (string.IsNullOrEmpty(userRegisterRequest.Role))
                     {
                         user.Role = "User";
                     }
-                    await AddUserToRole(user.Id, userRegisterRequest.Role);
 
                     _context.SaveChanges();
+
+                    AddUserToRole(user.Id, userRegisterRequest.Role);
+
                 }
 
 
@@ -124,6 +129,9 @@ namespace Syntax.Auth.Services
             );
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+            user.LastAccessDate= DateTime.Now;
+            _context.LoginLogs.Add(new LoginLog { IdUser = user.Id, UserName = user.UserName , LoginTime = DateTime.Now });
+            await _context.SaveChangesAsync();
             return new UserLoginResponse
                 (
                     success: true,

@@ -11,6 +11,8 @@ namespace Syntax.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrator")]
+
     public class AssetClassController : ControllerBase
     {
 

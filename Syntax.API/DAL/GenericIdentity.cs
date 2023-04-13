@@ -29,7 +29,7 @@ namespace Syntax.API.DAL
         {
             this._context = _context;
             this._userManager = userManager;
-            
+
         }
 
         public void Operation(T item, OperationType op)
@@ -55,15 +55,21 @@ namespace Syntax.API.DAL
             }
             else
             {
+                if (op == OperationType.Deleted)
+                {
+                    var user = item as ApplicationUser;
+                    var roles = _userManager.GetRolesAsync(user).Result;
+                    _userManager.RemoveFromRolesAsync(user, roles).Wait();
+                }
                 _context.Entry<T>(item).State = (EntityState)op;
                 _context.SaveChanges();
             }
-           
+
         }
         public IEnumerable<T> List()
-        
         {
-            return _context.Set<T>().ToList();
+            var uList = _context.Set<T>().ToList();
+            return uList;
         }
         public ApplicationUser? FindById(string id)
         {

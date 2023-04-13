@@ -112,6 +112,11 @@ namespace Syntax.API.DI
                 };
             });
 
+            //services.AddAuthorization(op =>
+            //{
+            //    op.AddPolicy("AdminOnly", policy => policy.RequireRole("Administrator"));
+            //});
+
 
             services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
 
@@ -179,6 +184,9 @@ namespace Syntax.API.DI
             #region CASO FAÇA UPDATEDATABSE OU MIGRATION COMENTAR
             InitializeRoles(serviceProvider).Wait();
             #endregion
+
+            services.AddScoped<SeedUsers>();
+            services.AddScoped<SeedAssetClass>();
 
 
             return services;

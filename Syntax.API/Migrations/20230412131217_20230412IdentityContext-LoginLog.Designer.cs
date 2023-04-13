@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syntax.Auth.Data;
 
@@ -11,9 +12,10 @@ using Syntax.Auth.Data;
 namespace Syntax.API.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    partial class IdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20230412131217_20230412IdentityContext-LoginLog")]
+    partial class _20230412IdentityContextLoginLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,9 +176,6 @@ namespace Syntax.API.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("LastAccessDate")
                         .HasColumnType("datetime2");
 
@@ -251,11 +250,6 @@ namespace Syntax.API.Migrations
                     b.Property<DateTime>("LoginTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("LoginTime");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserName");
 
                     b.HasKey("Id");
 

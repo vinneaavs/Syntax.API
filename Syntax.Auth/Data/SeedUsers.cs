@@ -47,7 +47,7 @@ public class SeedUsers : IHostedService
         if (await _userManager.FindByEmailAsync(admin2.Email) == null)
         {
             await _userManager.CreateAsync(admin2, "Syntax@123");
-            await _userManager.AddToRoleAsync(admin1, "Administrator");
+            await _userManager.AddToRoleAsync(admin2, "Administrator");
 
         }
     }

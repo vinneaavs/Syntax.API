@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
+using Syntax.API.Models;
 
 namespace Syntax.API.DAL
 {
@@ -27,9 +28,15 @@ namespace Syntax.API.DAL
         {
             return _context.Set<T>();
         }
-        public T? FindById(int id) 
+        public T? FindById(int id)
         {
             return _context.Set<T>().Find(id);
+        }
+
+
+        public bool FindByString(string name)
+        {
+            return _context.AssetsClasses.FirstOrDefault(x => x.Name == name) != null;
         }
     }
 }

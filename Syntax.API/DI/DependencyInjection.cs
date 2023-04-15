@@ -186,6 +186,7 @@ namespace Syntax.API.DI
             #endregion
 
             services.AddScoped<SeedUsers>();
+            services.AddScoped<SeedAsset>();
             services.AddScoped<SeedAssetClass>();
 
 

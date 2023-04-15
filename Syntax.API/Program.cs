@@ -75,6 +75,20 @@ using (var serviceScope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred seeding the asset classes.");
     }
 }
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+    try
+    {
+        var seedAssetClass = services.GetRequiredService<SeedAsset>();
+        await seedAssetClass.CreateAssetClassesAsync();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the asset classes.");
+    }
+}
 #endregion
 
 #region SESSION

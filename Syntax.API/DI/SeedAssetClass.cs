@@ -30,31 +30,31 @@ namespace Syntax.API.DI
                 {
                     Name = "Ação",
                     Description = "Ações listadas na bolsa no Brasil",
-                    Icon = "\U0001F4B5" // Emoji "money with wings"
+                    Icon = "~/Assets/action.svg"
                 },
                 new AssetClass
                 {
                     Name = "Fundo Imobiliário",
                     Description = "FIIs listados na bolsa do Brasil",
-                    Icon = "\U0001F3E1" // Emoji "houses"
+                    Icon = "~/Assets/fundimob.svg"
                 },
                 new AssetClass
                 {
                     Name = "Stock",
                     Description = "Ação listada na bolsa Americana",
-                    Icon = "\U0001F4B0" // Emoji "money bag"
+                    Icon = "~/Assets/action.svg"
                 },
                 new AssetClass
                 {
                     Name = "ETF(BR)",
                     Description = "ETF listada na bolsa Brasileira",
-                    Icon = "\U0001F4B2" // Emoji "chart increasing"
+                    Icon = "~/Assets/action.svg"
                 },
                 new AssetClass
                 {
                     Name = "ETF(EUA)",
                     Description = "ETF listada na bolsa Americana",
-                    Icon = "\U0001F4B2" // Emoji "chart increasing"
+                    Icon = "~/Assets/action.svg"
                 }
             };
 

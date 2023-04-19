@@ -33,6 +33,9 @@ namespace Syntax.API.DI
             DbInitializer
                 .Initialize(context);
 
+            var contextIdnetity = provider.GetRequiredService<IdentityContext>();
+            DbInitializer.Initialize(contextIdnetity);
+
 
 
 
@@ -179,16 +182,17 @@ namespace Syntax.API.DI
                 });
 
             });
+
+         
+            services.AddScoped<SeedUsers>();
+            services.AddScoped<SeedAsset>();
+            services.AddScoped<SeedAssetClass>();
+
             var serviceProvider = services.BuildServiceProvider();
 
             #region CASO FAÇA UPDATEDATABSE OU MIGRATION COMENTAR
             InitializeRoles(serviceProvider).Wait();
             #endregion
-
-            services.AddScoped<SeedUsers>();
-            services.AddScoped<SeedAsset>();
-            services.AddScoped<SeedAssetClass>();
-
 
             return services;
         }

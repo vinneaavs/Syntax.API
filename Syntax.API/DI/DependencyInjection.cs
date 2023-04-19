@@ -184,7 +184,7 @@ namespace Syntax.API.DI
             });
 
          
-            services.AddScoped<SeedUsers>();
+                services.AddScoped<SeedUsers>();
             services.AddScoped<SeedAsset>();
             services.AddScoped<SeedAssetClass>();
 

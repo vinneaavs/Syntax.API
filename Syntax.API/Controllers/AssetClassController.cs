@@ -76,7 +76,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<AssetClassController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public IActionResult EditAssetClass(AssetClass assetClass)
         {
             var response = new ErrorResponse();

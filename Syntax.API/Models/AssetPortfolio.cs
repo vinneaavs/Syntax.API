@@ -12,7 +12,7 @@ namespace Syntax.API.Models
         [Key] public int Id { get; set; }
         public decimal Quantity { get; set; }
         public decimal PurchasePrice { get; set; }
-        public DateTime? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public DateTime Date { get; set; }
         public EventTypeAssetPortfolio Type { get; set; }
         #region ALTERAÇÃO DE ABORGAGEM

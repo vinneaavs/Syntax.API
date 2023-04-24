@@ -71,6 +71,7 @@ namespace Syntax.API.Controllers
             }
 
             // Se não houver erros, salva a classe de ativos e retorna um Ok
+            assetClass.CreationDate = DateTime.Now;
             _assetClassDao.Operation(assetClass, OperationType.Added);
             return Ok(assetClass);
         }

@@ -92,7 +92,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public ApplicationUser CreateUser(ApplicationUser user)
         {
-            _userDao.Operation(user, OperationType.Added);
+            _userDao.OperationAsync(user, OperationType.Added);
             return user;
         }
 
@@ -100,7 +100,7 @@ namespace Syntax.API.Controllers
         [HttpPut]
         public ApplicationUser EditUser(ApplicationUser user)
         {
-            _userDao.Operation(user, OperationType.Modified);
+            _userDao.OperationAsync(user, OperationType.Modified);
             return user;
         }
 
@@ -110,7 +110,7 @@ namespace Syntax.API.Controllers
         {
             try
             {
-                _userDao.Operation(user, OperationType.Deleted);
+                _userDao.OperationAsync(user, OperationType.Deleted);
                 return Ok($"Usuario {user.UserName} - {user.Id} Deletado com Sucesso");
             }
             catch (Exception ex)
@@ -126,7 +126,7 @@ namespace Syntax.API.Controllers
             {
                 var user = _userDao.FindById(id);
 
-                _userDao.Operation(user!, OperationType.Deleted);
+                _userDao.OperationAsync(user!, OperationType.Deleted);
                 return Ok("Deletado com sucesso !");
             }
             catch (Exception ex)

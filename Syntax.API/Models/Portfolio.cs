@@ -11,7 +11,7 @@ namespace Syntax.API.Models
         #region ALTERAÇÃO DE ABORDAGEM
         //public User? User { get; set; }
         #endregion
-        public DateTime? CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
 
         public int IdUser { get; set; }
         public virtual ApplicationUser? UserNavigation { get; set; }

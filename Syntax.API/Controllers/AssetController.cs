@@ -40,6 +40,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public Asset CreateAsset(Asset asset)
         {
+            asset.CreationDate = DateTime.Now;
             _assetDao.Operation(asset, OperationType.Added);
             return asset;
         }

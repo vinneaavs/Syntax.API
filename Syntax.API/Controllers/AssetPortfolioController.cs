@@ -35,6 +35,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public AssetPortfolio CreateAssetPortfolio(AssetPortfolio assetPortfolio)
         {
+            assetPortfolio.CreationDate = DateTime.Now;
             _assetPortifolioDao.Operation(assetPortfolio, OperationType.Added);
             return assetPortfolio;
 

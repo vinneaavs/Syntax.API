@@ -1,27 +1,112 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
+using Syntax.Auth.Data;
+using System.Globalization;
 
 namespace Syntax.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChartController : ControllerBase
+    public class DashboardController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IdentityContext __context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ChartController(ApplicationDbContext context)
+
+        public DashboardController(ApplicationDbContext context, IdentityContext context_)
         {
             _context = context;
+            __context = context_;
         }
 
-        [HttpGet("TCbyMonth")]
-        public IActionResult GetTransactionsByMonth()
+        [HttpGet("UserByMonth")]
+        public IActionResult GetUserCreatedByMonth()
         {
-            var transactionsByMonth = _context.TransactionClasses
-                .GroupBy(t => new { Month = t. .CreatedDate.Month, Year = t.CreatedDate.Year })
-                .Select(g => new { MonthYear = $"{g.Key.Month}/{g.Key.Year}", Count = g.Count() })
-                .ToList();
-            return Ok(transactionsByMonth);
+            var roles = __context.Roles.Select(r => r.Name).ToList();
+            var months = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames.Take(12).ToArray();
+
+            var data = new List<object>();
+            int totalUsers = 0;
+            int currentMonthUsers = 0;
+            var currentMonth = DateTime.Today.Month;
+            var lastMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+
+            foreach (var role in roles)
+            {
+                var counts = new List<int>();
+                for (int i = 0; i < 12; i++)
+                {
+                    var count = __context.Users
+                        .Count(x => x.Role.ToLower() == role.ToLower() && x.CreationDate.Month == i + 1);
+                    counts.Add(count);
+                    totalUsers += count;
+
+                    if (i == currentMonth - 1)
+                    {
+                        currentMonthUsers += count;
+                    }
+                }
+
+                data.Add(new { role = role, counts = counts });
+            }
+
+            var percentUser = currentMonthUsers == 0 ? 0 : (currentMonthUsers * 100 / totalUsers);
+            var result = new
+            {
+                months = months,
+                data = data,
+                totalUsers = totalUsers,
+                currentMonthUsers = currentMonthUsers,
+                percentUser = percentUser
+            };
+
+            return Ok(result);
         }
+
+        [HttpGet("UserLogonByDay")]
+        public IActionResult GetUserLogonByDay()
+        {
+            var today = DateTime.Today;
+            var lastWeek = today.AddDays(-6);
+
+            var distinctUsersLogon = __context.LoginLogs
+                .Where(l => l.LoginTime >= lastWeek)
+                .Select(l => l.IdUser)
+                .Distinct()
+                .Count();
+
+            var usersTotal = __context.Users.Count();
+
+            var logonCounts = new List<int>();
+            var dates = new List<string>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                var logonDate = lastWeek.AddDays(i);
+
+                var count = __context.LoginLogs
+                    .Count(l => l.LoginTime.Date == logonDate.Date);
+
+                logonCounts.Add(count);
+                dates.Add(logonDate.ToShortDateString());
+            }
+
+            var result = new
+            {
+                dates = dates,
+                logonCounts = logonCounts,
+                recentLogonUsers = logonCounts.Sum(),
+                percentUserLogonByTotal = usersTotal == 0 ? 0 : (int)Math.Round(((double)distinctUsersLogon / usersTotal) * 100)
+            };
+
+            return Ok(result);
+        }
+
+
+
     }
 }

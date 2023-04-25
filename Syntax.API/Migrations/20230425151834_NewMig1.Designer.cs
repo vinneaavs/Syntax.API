@@ -9,11 +9,11 @@ using Syntax.API.Context;
 
 #nullable disable
 
-namespace Syntax.API.Migrations.ApplicationDb
+namespace Syntax.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230424022806_DbNullUser")]
-    partial class DbNullUser
+    [Migration("20230425151834_NewMig1")]
+    partial class NewMig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,8 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdAssetClass");
 
                     b.ToTable("Assets");
                 });
@@ -112,6 +114,10 @@ namespace Syntax.API.Migrations.ApplicationDb
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdAsset");
+
+                    b.HasIndex("IdPortfolio");
+
                     b.ToTable("AssetPortfolios");
                 });
 
@@ -129,13 +135,16 @@ namespace Syntax.API.Migrations.ApplicationDb
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdUser");
 
                     b.ToTable("Portfolios");
                 });
@@ -157,8 +166,9 @@ namespace Syntax.API.Migrations.ApplicationDb
                     b.Property<int>("IdTransactionClass")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -167,6 +177,8 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdTransactionClass");
 
                     b.ToTable("Transactions");
                 });
@@ -266,6 +278,58 @@ namespace Syntax.API.Migrations.ApplicationDb
                     b.HasKey("Id");
 
                     b.ToTable("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Syntax.API.Models.Asset", b =>
+                {
+                    b.HasOne("Syntax.API.Models.AssetClass", "AssetClassNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdAssetClass")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssetClassNavigation");
+                });
+
+            modelBuilder.Entity("Syntax.API.Models.AssetPortfolio", b =>
+                {
+                    b.HasOne("Syntax.API.Models.Asset", "AssetNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdAsset")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Syntax.API.Models.Portfolio", "PortFolioNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdPortfolio")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssetNavigation");
+
+                    b.Navigation("PortFolioNavigation");
+                });
+
+            modelBuilder.Entity("Syntax.API.Models.Portfolio", b =>
+                {
+                    b.HasOne("Syntax.Auth.Data.ApplicationUser", "UserNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserNavigation");
+                });
+
+            modelBuilder.Entity("Syntax.API.Models.Transaction", b =>
+                {
+                    b.HasOne("Syntax.API.Models.TransactionClass", "TransactionClassNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdTransactionClass")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TransactionClassNavigation");
                 });
 #pragma warning restore 612, 618
         }

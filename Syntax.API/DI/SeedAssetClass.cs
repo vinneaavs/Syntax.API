@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Syntax.API.Context;
 using Syntax.API.Models;
-using System.Data.Entity;
+using System.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Syntax.API.DI

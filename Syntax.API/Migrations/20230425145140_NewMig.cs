@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Syntax.API.Migrations.ApplicationDb
+namespace Syntax.API.Migrations
 {
     /// <inheritdoc />
-    public partial class DbNullUser : Migration
+    public partial class NewMig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,7 +104,7 @@ namespace Syntax.API.Migrations.ApplicationDb
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IdUser = table.Column<int>(type: "int", nullable: false)
+                    IdUser = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -137,7 +137,7 @@ namespace Syntax.API.Migrations.ApplicationDb
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    IdUser = table.Column<int>(type: "int", nullable: false),
+                    IdUser = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdTransactionClass = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

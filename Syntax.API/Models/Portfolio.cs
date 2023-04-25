@@ -1,5 +1,6 @@
 ﻿using Syntax.Auth.Data;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.API.Models
 {
@@ -13,8 +14,10 @@ namespace Syntax.API.Models
         #endregion
         public DateTime? CreationDate { get; set; } = DateTime.Now;
 
-        public int IdUser { get; set; }
-        public virtual ApplicationUser? UserNavigation { get; set; }
+        public string IdUser { get; set; }
+        [ForeignKey(nameof(IdUser))]
+
+        public virtual ApplicationUser UserNavigation { get; set; }
 
     }
 }

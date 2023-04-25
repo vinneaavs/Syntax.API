@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.API.Models
 {
     public enum EventTypeAssetPortfolio
     {
         Compra,
-        Venda        
+        Venda
     }
     public class AssetPortfolio
     {
@@ -21,8 +22,11 @@ namespace Syntax.API.Models
         #endregion
         public int IdPortfolio { get; set; }
         public int IdAsset { get; set; }
-        public virtual Portfolio? PortFolioNavigation { get; set; }
-        public virtual Asset? AssetNavigation { get; set; }
+        [ForeignKey(nameof(IdPortfolio))]
+        public virtual Portfolio PortFolioNavigation { get; set; }
+
+        [ForeignKey(nameof(IdAsset))]
+        public virtual Asset AssetNavigation { get; set; }
 
 
 

@@ -24,10 +24,14 @@ namespace Syntax.API.Models
         //public User? User { get; set; }
         //public TransactionClass TransactionClass { get; set; }
         #endregion
-        public int IdUser { get; set; }
+        public string IdUser { get; set; }
         public int IdTransactionClass { get; set; }
-        public virtual ApplicationUser? UserNavigation { get; set; }
-        public virtual TransactionClass? TransactionClassNavigation { get; set; }
+        [ForeignKey(nameof(IdUser))]
+
+        public virtual ApplicationUser UserNavigation { get; set; }
+        [ForeignKey(nameof(IdTransactionClass))]
+
+        public virtual TransactionClass TransactionClassNavigation { get; set; }
 
 
     }

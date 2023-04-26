@@ -24,11 +24,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-EXPOSE 80
+ENTRYPOINT ["dotnet", "Syntax.API.dll"]
 
-# Inicia o container Auth
-CMD ["dotnet", "Syntax.Auth.dll"]
-# Inicia o container de Application
-CMD ["dotnet", "Syntax.Application.dll"]
-# Inicia o container da API
-CMD ["dotnet", "Syntax.API.dll"]
+EXPOSE 80

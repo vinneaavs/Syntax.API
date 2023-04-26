@@ -115,6 +115,8 @@ app.UseAuthorization();
 
 app.UseCors();
 
+app.UseUrls("http://0.0.0.0:80");
+
 app.MapControllers();
 
 app.Run();

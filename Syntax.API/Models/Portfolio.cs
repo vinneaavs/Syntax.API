@@ -15,9 +15,9 @@ namespace Syntax.API.Models
         public DateTime? CreationDate { get; set; } = DateTime.Now;
 
         public string IdUser { get; set; }
-        [ForeignKey(nameof(IdUser))]
+        //[ForeignKey(nameof(IdUser))]
 
-        public virtual ApplicationUser UserNavigation { get; set; }
+        public virtual ApplicationUser? UserNavigation { get; set; }
 
     }
 }

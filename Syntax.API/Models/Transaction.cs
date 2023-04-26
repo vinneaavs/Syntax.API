@@ -26,12 +26,12 @@ namespace Syntax.API.Models
         #endregion
         public string IdUser { get; set; }
         public int IdTransactionClass { get; set; }
-        [ForeignKey(nameof(IdUser))]
+        //[ForeignKey(nameof(IdUser))]
 
-        public virtual ApplicationUser UserNavigation { get; set; }
-        [ForeignKey(nameof(IdTransactionClass))]
+        public virtual ApplicationUser? UserNavigation { get; set; }
+        //[ForeignKey(nameof(IdTransactionClass))]
 
-        public virtual TransactionClass TransactionClassNavigation { get; set; }
+        public virtual TransactionClass? TransactionClassNavigation { get; set; }
 
 
     }

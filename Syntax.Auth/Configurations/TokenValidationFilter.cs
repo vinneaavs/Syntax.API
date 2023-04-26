@@ -38,7 +38,7 @@ public class TokenValidationFilter : IAsyncAuthorizationFilter
 
         if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out var token))
         {
-            context.Result = new UnauthorizedResult();
+            //context.Result = new UnauthorizedResult();
             return;
         }
 

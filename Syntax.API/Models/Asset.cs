@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.API.Models
 {
@@ -12,8 +13,10 @@ namespace Syntax.API.Models
         //public AssetClass AssetClass { get; set; }
         #endregion
         public int IdAssetClass { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public int Grade { get; set; }
-        public virtual AssetClass? AssetClassNavigation { get; set; }
+        [ForeignKey(nameof(IdAssetClass))]
+        public virtual AssetClass AssetClassNavigation { get; set; }
 
     }
 }

@@ -23,7 +23,7 @@ namespace Syntax.Auth.Data
         public string? Role { get; set; }
         public DateTime? LastAccessDate { get; set; }
         public bool IsEmailConfirmed { get; set; }
-        public string FullName => $"{LastName}, {Name}";
+        public string? FullName => $"{LastName}, {Name}";
 
 
     }

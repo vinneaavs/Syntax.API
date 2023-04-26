@@ -1,17 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.API.Models
 {
     public enum EventTypeAssetPortfolio
     {
         Compra,
-        Venda        
+        Venda
     }
     public class AssetPortfolio
     {
         [Key] public int Id { get; set; }
         public decimal Quantity { get; set; }
         public decimal PurchasePrice { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
         public DateTime Date { get; set; }
         public EventTypeAssetPortfolio Type { get; set; }
         #region ALTERAÇÃO DE ABORGAGEM
@@ -20,8 +22,11 @@ namespace Syntax.API.Models
         #endregion
         public int IdPortfolio { get; set; }
         public int IdAsset { get; set; }
-        public virtual Portfolio? PortFolioNavigation { get; set; }
-        public virtual Asset? AssetNavigation { get; set; }
+        [ForeignKey(nameof(IdPortfolio))]
+        public virtual Portfolio PortFolioNavigation { get; set; }
+
+        [ForeignKey(nameof(IdAsset))]
+        public virtual Asset AssetNavigation { get; set; }
 
 
 

@@ -28,6 +28,8 @@ namespace Syntax.Auth.Data
             modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("AspNetUserClaims").HasKey(x => x.Id);
             modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("AspNetRoleClaims").HasKey(x => x.Id);
 
+
+
             // Configurações da tabela LoginLog
             modelBuilder.Entity<LoginLog>().ToTable("LoginLog");
             modelBuilder.Entity<LoginLog>().HasKey(x => x.Id);

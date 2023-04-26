@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
@@ -12,11 +13,20 @@ namespace Syntax.API.Controllers
     public class PortfolioController : ControllerBase
     {
         private readonly PortifolioDao _portifolioDao;
+        private readonly ApplicationDbContext _applicationDbContext;
         public PortfolioController(ApplicationDbContext _context)
         {
             _portifolioDao = new PortifolioDao(_context);
+            _applicationDbContext = _context;
 
         }
+        [HttpGet("{idUser}")]
+        public IEnumerable<Portfolio> GetPortfoliosByUser(string idUser)
+        {
+            var list = _applicationDbContext.Portfolios.Where(x => x.IdUser == idUser).ToList();
+            return list;
+        }
+
 
         // GET: api/<PortfolioController>
         [HttpGet]
@@ -36,6 +46,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public Portfolio CreatePortfolio(Portfolio portfolio)
         {
+            portfolio.CreationDate = DateTime.Now;
             _portifolioDao.Operation(portfolio, OperationType.Added);
             return portfolio;
         }

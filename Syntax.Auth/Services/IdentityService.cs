@@ -151,7 +151,7 @@ namespace Syntax.Auth.Services
             claims.Add(new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()));
             claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.UserName));
             claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
-            claims.Add(new Claim("Id", user.Id.ToString()));
+            claims.Add(new Claim("id", user.Id.ToString()));
             claims.Add(new Claim("displayName", user.FullName.ToString()));
 
             foreach (var r in roles)

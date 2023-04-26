@@ -15,8 +15,8 @@ namespace Syntax.API.Models
         public int IdAssetClass { get; set; }
         public DateTime? CreationDate { get; set; } = DateTime.Now;
         public int Grade { get; set; }
-        [ForeignKey(nameof(IdAssetClass))]
-        public virtual AssetClass AssetClassNavigation { get; set; }
+        //[ForeignKey(nameof(IdAssetClass))]
+        public virtual AssetClass? AssetClassNavigation { get; set; }
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.API.Models;
+using Syntax.Auth.Data;
 
 namespace Syntax.API.Context;
 
@@ -24,8 +25,8 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.IdAssetClass);
 
-        //modelBuilder.Entity<Asset>()
-        //    .Ignore(a => a.AssetClassNavigation);
+        modelBuilder.Entity<Asset>()
+            .Ignore(a => a.AssetClassNavigation);
 
 
 
@@ -34,8 +35,8 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.IdPortfolio);
 
-        //modelBuilder.Entity<AssetPortfolio>()
-        //    .Ignore(a => a.PortFolioNavigation);
+        modelBuilder.Entity<AssetPortfolio>()
+            .Ignore(a => a.PortFolioNavigation);
 
 
         modelBuilder.Entity<AssetPortfolio>()
@@ -43,8 +44,8 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.IdAsset);
 
-        //modelBuilder.Entity<AssetPortfolio>()
-        //    .Ignore(a => a.AssetNavigation);
+        modelBuilder.Entity<AssetPortfolio>()
+            .Ignore(a => a.AssetNavigation);
 
 
 
@@ -54,8 +55,8 @@ public class ApplicationDbContext : DbContext
            .WithMany()
            .HasForeignKey(a => a.IdUser);
 
-        //modelBuilder.Entity<Portfolio>()
-        //    .Ignore(a => a.UserNavigation);
+        modelBuilder.Entity<Portfolio>()
+            .Ignore(a => a.UserNavigation);
 
 
 
@@ -72,8 +73,11 @@ public class ApplicationDbContext : DbContext
         .WithMany()
         .HasForeignKey(a => a.IdTransactionClass);
 
-        //modelBuilder.Entity<Transaction>()
-        //    .Ignore(a => a.TransactionClassNavigation);
+        modelBuilder.Entity<Transaction>()
+            .Ignore(a => a.TransactionClassNavigation);
+
+        modelBuilder.Ignore<ApplicationUser>();
+
 
     }
 }

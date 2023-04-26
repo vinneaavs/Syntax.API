@@ -12,8 +12,8 @@ using Syntax.Auth.Data;
 namespace Syntax.API.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20230425145603_NewMig")]
-    partial class NewMig
+    [Migration("20230426154422_newmigtest1")]
+    partial class newmigtest1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

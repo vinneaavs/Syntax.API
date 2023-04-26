@@ -50,8 +50,6 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdAssetClass");
-
                     b.ToTable("Assets");
                 });
 
@@ -111,10 +109,6 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdAsset");
-
-                    b.HasIndex("IdPortfolio");
-
                     b.ToTable("AssetPortfolios");
                 });
 
@@ -134,14 +128,12 @@ namespace Syntax.API.Migrations
 
                     b.Property<string>("IdUser")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdUser");
 
                     b.ToTable("Portfolios");
                 });
@@ -175,8 +167,6 @@ namespace Syntax.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdTransactionClass");
-
                     b.ToTable("Transactions");
                 });
 
@@ -203,130 +193,6 @@ namespace Syntax.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TransactionClasses");
-                });
-
-            modelBuilder.Entity("Syntax.Auth.Data.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastAccessDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ApplicationUser");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.Asset", b =>
-                {
-                    b.HasOne("Syntax.API.Models.AssetClass", "AssetClassNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAssetClass")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssetClassNavigation");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.AssetPortfolio", b =>
-                {
-                    b.HasOne("Syntax.API.Models.Asset", "AssetNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAsset")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syntax.API.Models.Portfolio", "PortFolioNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdPortfolio")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssetNavigation");
-
-                    b.Navigation("PortFolioNavigation");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.Portfolio", b =>
-                {
-                    b.HasOne("Syntax.Auth.Data.ApplicationUser", "UserNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdUser")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserNavigation");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.Transaction", b =>
-                {
-                    b.HasOne("Syntax.API.Models.TransactionClass", "TransactionClassNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdTransactionClass")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TransactionClassNavigation");
                 });
 #pragma warning restore 612, 618
         }

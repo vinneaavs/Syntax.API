@@ -23,9 +23,17 @@ namespace Syntax.API.Controllers
         }
 
 
-        [HttpGet("{idUser}")]
+        [HttpGet("user/{idUser}")]
         public IEnumerable<Transaction> GetTransactionsByUser(string idUser)
         {
+            var transaction = new Transaction();
+            transaction.Date = DateTime.Now;
+            transaction.Description = "Mercado";
+            transaction.IdTransactionClass = 1;
+            transaction.IdUser = idUser;
+            transaction.Type = (int)EventTypeTransaction.Despesas;
+            transaction.Value = 780;
+
             var list = _applicationDbContext.Transactions.Where(x=>x.IdUser == idUser).ToList();
             return list;
         }

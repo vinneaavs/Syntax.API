@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Syntax.API.Migrations.Identity
 {
     /// <inheritdoc />
-    public partial class NewMig : Migration
+    public partial class newmigtest1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,9 +30,9 @@ namespace Syntax.API.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastAccessDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),

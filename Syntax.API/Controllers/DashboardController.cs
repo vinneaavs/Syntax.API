@@ -119,14 +119,16 @@ namespace Syntax.API.Controllers
             var classes = _context.TransactionClasses.ToList();
             var transactions = _context.Transactions.ToList();
 
-            var transactionsByClass = classes.Select(c => new
-            {
-                TransactionClass = c.Name,
-                TransactionClassDescription = c.Description,
-                Transactions = _context.Transactions
-                    .Where(t => t.TransactionClassNavigation!.Id == c.Id)
-                    .ToList()
-            });
+            var transactionsByClass = _context.TransactionClasses
+      .Select(c => new
+      {
+          TransactionClass = c.Name,
+          TransactionClassDescription = c.Description,
+          Transactions = _context.Transactions
+              .Where(t => t.IdTransactionClass == c.Id)
+              .ToList()
+      })
+      .ToList();
 
             var result = transactionsByClass.Select(tc => new
             {
@@ -147,8 +149,10 @@ namespace Syntax.API.Controllers
                 }).ToList()
             }).ToList();
 
-                
             return Ok(result);
+
+
+
         }
 
         [HttpGet("TransactionByClassUser/{IdUser}")]

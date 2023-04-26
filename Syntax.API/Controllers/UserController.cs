@@ -16,7 +16,7 @@ namespace Syntax.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Administrator")]
+    //[Authorize(Roles = "Administrator")]
 
     public class UserController : ControllerBase
     {

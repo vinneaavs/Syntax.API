@@ -15,10 +15,21 @@ namespace Syntax.API.Controllers
     {
 
         private readonly TransactionDao _transactionDao;
+        private readonly ApplicationDbContext _applicationDbContext;
         public TransactionController(ApplicationDbContext _context)
         {
             _transactionDao = new TransactionDao(_context);
+            _applicationDbContext = _context;
         }
+
+
+        [HttpGet("{idUser}")]
+        public IEnumerable<Transaction> GetTransactionsByUser(string idUser)
+        {
+            var list = _applicationDbContext.Transactions.Where(x=>x.IdUser == idUser).ToList();
+            return list;
+        }
+
 
         // GET: api/<TransactionController>
         [HttpGet]

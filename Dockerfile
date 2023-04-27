@@ -25,5 +25,3 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENTRYPOINT ["dotnet", "Syntax.API.dll"]
-
-EXPOSE 80

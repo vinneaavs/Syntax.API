@@ -4,12 +4,6 @@ COPY . .
 WORKDIR "/src/Syntax.API"
 RUN dotnet build "Syntax.API.csproj" -c Release -o /app/build
 
-WORKDIR "/src/Syntax.Application"
-RUN dotnet build "Syntax.Application.csproj" -c Release -o /app/build
-
-WORKDIR "/src/Syntax.Auth"
-RUN dotnet build "Syntax.Auth.csproj" -c Release -o /app/build
-
 FROM build AS publish
 WORKDIR "/src/Syntax.API"
 RUN dotnet publish "Syntax.API.csproj" -c Release -o /app/publish /p:UseAppHost=false

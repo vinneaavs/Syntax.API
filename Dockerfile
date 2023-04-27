@@ -24,4 +24,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+EXPOSE 80
+
 ENTRYPOINT ["dotnet", "Syntax.API.dll"]

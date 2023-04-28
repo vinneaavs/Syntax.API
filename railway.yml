@@ -1,0 +1,10 @@
+version: '1'
+services:
+  api:
+    env:
+      ASPNETCORE_ENVIRONMENT: Production
+    build:
+      context: ./Syntax.API
+      dockerfile: Dockerfile
+    http:
+      port: $PORT

@@ -32,7 +32,7 @@ namespace Syntax.API.DAL
 
         }
 
-        public void Operation(T item, OperationType op)
+        public async Task OperationAsync(T item, OperationType op)
         {
             if (op == OperationType.Modified)
             {
@@ -49,7 +49,7 @@ namespace Syntax.API.DAL
                     _userManager.RemoveFromRolesAsync(user, roles).Wait();
                     _userManager.AddToRoleAsync(user, user.Role).Wait();
                 }
-
+ 
                 _context.Entry(originalUser).CurrentValues.SetValues(user);
                 _context.SaveChanges();
             }

@@ -35,6 +35,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public TransactionClass CreateTransactionClass(TransactionClass transactionClass)
         {
+            transactionClass.CreationDate = DateTime.Now;
             _transactionClassDao.Operation(transactionClass, OperationType.Added);
             return transactionClass;
         }

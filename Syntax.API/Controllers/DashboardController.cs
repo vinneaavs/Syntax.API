@@ -120,12 +120,12 @@ namespace Syntax.API.Controllers
             var transactions = _context.Transactions.ToList();
 
             var transactionsByClass = classes.Select(c => new
-            {
-                TransactionClass = c.Name,
-                TransactionClassDescription = c.Description,
-                Transactions = _context.Transactions
+      {
+          TransactionClass = c.Name,
+          TransactionClassDescription = c.Description,
+          Transactions = _context.Transactions
                     .Where(t => t.TransactionClassNavigation!.Id == c.Id)
-                    .ToList()
+              .ToList()
             });
 
             var result = transactionsByClass.Select(tc => new
@@ -145,7 +145,9 @@ namespace Syntax.API.Controllers
                     Type = g.Key,
                     Percentage = ((double)g.Count() / tc.Transactions.Count()).ToString("P")
                 }).ToList()
+            }).ToList();
 
+            return Ok(result);
 
             }).ToList();
 

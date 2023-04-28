@@ -3,24 +3,27 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Syntax.API.Context;
 
 #nullable disable
 
-namespace Syntax.API.Migrations.ApplicationDb
+namespace Syntax.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230426154331_newmigtest1")]
+    partial class newmigtest1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.14")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Syntax.API.Models.Asset", b =>
                 {
@@ -28,7 +31,10 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -47,8 +53,6 @@ namespace Syntax.API.Migrations.ApplicationDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdAssetClass");
-
                     b.ToTable("Assets");
                 });
 
@@ -58,7 +62,10 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -80,7 +87,10 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -102,10 +112,6 @@ namespace Syntax.API.Migrations.ApplicationDb
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdAsset");
-
-                    b.HasIndex("IdPortfolio");
-
                     b.ToTable("AssetPortfolios");
                 });
 
@@ -115,13 +121,17 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -137,7 +147,7 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -148,8 +158,9 @@ namespace Syntax.API.Migrations.ApplicationDb
                     b.Property<int>("IdTransactionClass")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdUser")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -158,8 +169,6 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdTransactionClass");
 
                     b.ToTable("Transactions");
                 });
@@ -170,7 +179,10 @@ namespace Syntax.API.Migrations.ApplicationDb
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -184,47 +196,6 @@ namespace Syntax.API.Migrations.ApplicationDb
                     b.HasKey("Id");
 
                     b.ToTable("TransactionClasses");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.Asset", b =>
-                {
-                    b.HasOne("Syntax.API.Models.AssetClass", "AssetClassNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAssetClass")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssetClassNavigation");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.AssetPortfolio", b =>
-                {
-                    b.HasOne("Syntax.API.Models.Asset", "AssetNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdAsset")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Syntax.API.Models.Portfolio", "PortFolioNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdPortfolio")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssetNavigation");
-
-                    b.Navigation("PortFolioNavigation");
-                });
-
-            modelBuilder.Entity("Syntax.API.Models.Transaction", b =>
-                {
-                    b.HasOne("Syntax.API.Models.TransactionClass", "TransactionClassNavigation")
-                        .WithMany()
-                        .HasForeignKey("IdTransactionClass")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TransactionClassNavigation");
                 });
 #pragma warning restore 612, 618
         }

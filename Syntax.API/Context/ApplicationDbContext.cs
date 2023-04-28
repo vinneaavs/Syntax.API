@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.API.Models;
+using Syntax.Auth.Data;
 
 namespace Syntax.API.Context;
 
@@ -74,6 +75,9 @@ public class ApplicationDbContext : DbContext
 
         //modelBuilder.Entity<Transaction>()
         //    .Ignore(a => a.TransactionClassNavigation);
+
+        modelBuilder.Ignore<ApplicationUser>();
+
 
     }
 }

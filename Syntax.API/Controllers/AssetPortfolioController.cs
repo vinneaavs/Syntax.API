@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Syntax.API.Context;
 using Syntax.API.DAL;
 using Syntax.API.Models;
@@ -13,8 +14,10 @@ namespace Syntax.API.Controllers
     public class AssetPortfolioController : ControllerBase
     {
         private readonly AssetPorttifolioDao _assetPortifolioDao;
+        private readonly ApplicationDbContext _applicationDbContext;
         public AssetPortfolioController(ApplicationDbContext _context)
         {
+            _applicationDbContext = _context;
             _assetPortifolioDao = new AssetPorttifolioDao(_context);
         }
         // GET: api/<InvestmentPortfolioController>
@@ -28,6 +31,9 @@ namespace Syntax.API.Controllers
         {
             var list = _applicationDbContext.AssetPortfolios.Include(x=>x.PortFolioNavigation).Where(x=>x.PortFolioNavigation.IdUser == idUser).ToList();
 
+            return list;
+        }
+
         // GET api/<InvestmentPortfolioController>/5
         [HttpGet("{id}")]
         public AssetPortfolio GetAssetPortfolio(int id)
@@ -39,6 +45,7 @@ namespace Syntax.API.Controllers
         [HttpPost]
         public AssetPortfolio CreateAssetPortfolio(AssetPortfolio assetPortfolio)
         {
+            assetPortfolio.CreationDate = DateTime.Now;
             _assetPortifolioDao.Operation(assetPortfolio, OperationType.Added);
             return assetPortfolio;
 

@@ -11,7 +11,11 @@ namespace Syntax.API.Models
         #region ALTERAÇÃO DE ABORDAGEM
         //public User? User { get; set; }
         #endregion
-        public int IdUser { get; set; }
+        public DateTime? CreationDate { get; set; } = DateTime.Now;
+
+        public string IdUser { get; set; }
+        [ForeignKey(nameof(IdUser))]
+
         public virtual ApplicationUser? UserNavigation { get; set; }
 
     }

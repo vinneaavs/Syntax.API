@@ -20,7 +20,10 @@ namespace Syntax.API.Models
         #endregion
         public int IdPortfolio { get; set; }
         public int IdAsset { get; set; }
+        [ForeignKey(nameof(IdPortfolio))]
         public virtual Portfolio? PortFolioNavigation { get; set; }
+
+        [ForeignKey(nameof(IdAsset))]
         public virtual Asset? AssetNavigation { get; set; }
 
 

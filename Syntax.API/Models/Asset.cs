@@ -13,6 +13,7 @@ namespace Syntax.API.Models
         #endregion
         public int IdAssetClass { get; set; }
         public int Grade { get; set; }
+        [ForeignKey(nameof(IdAssetClass))]
         public virtual AssetClass? AssetClassNavigation { get; set; }
 
     }

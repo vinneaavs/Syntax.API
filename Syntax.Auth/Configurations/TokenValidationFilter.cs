@@ -28,42 +28,42 @@ public class TokenValidationFilter : IAsyncAuthorizationFilter
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
 
-        var request = context.HttpContext.Request;
-        var isLocal = request.Host.Host == "localhost" && request.Host.Port == 5069;
+        //var request = context.HttpContext.Request;
+        //var isLocal = /*request.Host.Host == "localhost" &&*/ request.Host.Port == 5069;
 
-        if (isLocal)
-        {
-            return;
-        }
+        //if (isLocal)
+        //{
+        //    return;
+        //}
 
-        if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out var token))
-        {
-            context.Result = new UnauthorizedResult();
-            return;
-        }
+        //if (!context.HttpContext.Request.Headers.TryGetValue("Authorization", out var token))
+        //{
+        //    //context.Result = new UnauthorizedResult();
+        //    return;
+        //}
 
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SecurityKey"]);
-            tokenHandler.ValidateToken(token.ToString().Replace("Bearer ", ""), new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out SecurityToken validatedToken);
+        //try
+        //{
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SecurityKey"]);
+        //    tokenHandler.ValidateToken(token.ToString().Replace("Bearer ", ""), new TokenValidationParameters
+        //    {
+        //        ValidateIssuerSigningKey = true,
+        //        IssuerSigningKey = new SymmetricSecurityKey(key),
+        //        ValidateIssuer = false,
+        //        ValidateAudience = false,
+        //        ClockSkew = TimeSpan.Zero
+        //    }, out SecurityToken validatedToken);
 
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
-            context.HttpContext.Items["UserId"] = userId;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to validate token");
-            context.Result = new UnauthorizedResult();
-            return;
-        }
+        //    var jwtToken = (JwtSecurityToken)validatedToken;
+        //    var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+        //    context.HttpContext.Items["UserId"] = userId;
+        //}
+        //catch (Exception ex)
+        //{
+        //    _logger.LogError(ex, "Failed to validate token");
+        //    context.Result = new UnauthorizedResult();
+        //    return;
+        //}
     }
 }

@@ -23,6 +23,10 @@ namespace Syntax.API.Controllers
         {
             return _assetPortifolioDao.List().ToList();
         }
+        [HttpGet("user/{idUser}")]
+        public IEnumerable<AssetPortfolio> GetAssetsPortfoliosByUser(string idUser)
+        {
+            var list = _applicationDbContext.AssetPortfolios.Include(x=>x.PortFolioNavigation).Where(x=>x.PortFolioNavigation.IdUser == idUser).ToList();
 
         // GET api/<InvestmentPortfolioController>/5
         [HttpGet("{id}")]

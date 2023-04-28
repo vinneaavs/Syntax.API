@@ -147,12 +147,7 @@ namespace Syntax.API.Controllers
                 }).ToList()
             }).ToList();
 
-            return Ok(result);
-
-            }).ToList();
-
-
-            return Ok(result);
+            return Ok(result);         
         }
 
         [HttpGet("TransactionByClassUser/{IdUser}")]

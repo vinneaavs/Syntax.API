@@ -52,7 +52,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<InvestmentPortfolioController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public AssetPortfolio EditAssetPortfolio(AssetPortfolio assetPortfolio)
         {
             _assetPortifolioDao.Operation(assetPortfolio, OperationType.Modified);

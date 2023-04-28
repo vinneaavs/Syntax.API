@@ -64,7 +64,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<TransactionController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public Transaction EditTransaction(Transaction transaction)
         {
             _transactionDao.Operation(transaction, OperationType.Modified);

@@ -41,7 +41,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<HomeController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public void Put(int id, [FromBody] string value)
         {
         }

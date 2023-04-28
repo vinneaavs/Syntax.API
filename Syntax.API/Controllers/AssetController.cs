@@ -46,7 +46,7 @@ namespace Syntax.API.Controllers
         }
 
         // PUT api/<AssetController>/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public Asset EditAsset(Asset asset)
         {
             _assetDao.Operation(asset, OperationType.Modified);

@@ -120,10 +120,10 @@ namespace Syntax.API.Controllers
             var transactions = _context.Transactions.ToList();
 
             var transactionsByClass = classes.Select(c => new
-      {
-          TransactionClass = c.Name,
-          TransactionClassDescription = c.Description,
-          Transactions = _context.Transactions
+            {
+                TransactionClass = c.Name,
+                TransactionClassDescription = c.Description,
+                Transactions = _context.Transactions
                     .Where(t => t.TransactionClassNavigation!.Id == c.Id)
               .ToList()
             });
@@ -147,47 +147,53 @@ namespace Syntax.API.Controllers
                 }).ToList()
             }).ToList();
 
-            return Ok(result);         
-        }
-
-        [HttpGet("TransactionByClassUser/{IdUser}")]
-        public IActionResult GetTransactionByClassByUser(string idUser)
-        {
-            var today = DateTime.Today;
-            var lastWeek = today.AddDays(-6);
-            var userTransactions = _context.Transactions
-                .Where(t => t.IdUser == idUser && t.Date >= lastWeek && t.Date <= today)
-                .ToList();
-
-            var result = new
-            {
-                TypeQuantity = userTransactions
-                    .GroupBy(t => t.Type)
-                    .Select(g => new
-                    {
-                        Type = g.Key,
-                        Quantity = g.Count(),
-                        Balance = g.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value)
-                    }).ToList(),
-                TotalQuantity = userTransactions.Count(),
-                TotalBalance = userTransactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value),
-                TypePercentages = userTransactions
-                    .GroupBy(t => t.Type)
-                    .Select(g => new
-                    {
-                        Type = g.Key,
-                        Percentage = (g.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value) / userTransactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value)).ToString("P")
-                    }).ToList()
-            };
-
             return Ok(result);
         }
 
+        [HttpGet("TransactionByClassUser/{idUser}")]
+        public IActionResult GetTransactionByClassByUser(string idUser)
+        {
+
+            //var today = DateTime.Today;
+            //var lastWeek = today.AddDays(-6);
+            var classes = _context.TransactionClasses.ToList();
+            var transactions = _context.Transactions.ToList();
+
+            var transactionsByClass = classes.Select(c => new
+            {
+                TransactionClass = c.Name,
+                TransactionClassDescription = c.Description,
+                Transactions = _context.Transactions
+                    .Where(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser)
+              .ToList()
+            });
+
+            var result = transactionsByClass.Select(tc => new
+            {
+                TransactionClass = tc.TransactionClass,
+                TransactionClassDescription = tc.TransactionClassDescription,
+                TypeQuantity = tc.Transactions.GroupBy(t => t.Type).Select(g => new
+                {
+                    Type = g.Key,
+                    Quantity = g.Count(),
+                    Balance = g.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value)
+                }).ToList(),
+                TotalQuantity = tc.Transactions.Count(),
+                TotalBalance = tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value),
+                TypePercentages = tc.Transactions.GroupBy(t => t.TransactionClassNavigation.Name).Select(g => new
+                {
+                    Type = g.Key,
+                    Percentage = ((double)g.Count() / tc.Transactions.Count()).ToString("P")
+                }).ToList()
+            }).ToList();
+
+                return Ok(result);
+
+
+
+        }
 
 
     }
-
-
-
 }
 

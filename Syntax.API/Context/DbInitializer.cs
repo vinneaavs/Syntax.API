@@ -7,6 +7,7 @@ namespace Syntax.API.Context
     {
         public static void Initialize(ApplicationDbContext context)
         {
+            
             context.Database.EnsureCreated();
         }
         public static void Initialize(IdentityContext context)

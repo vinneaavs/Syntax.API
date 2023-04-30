@@ -37,7 +37,7 @@ builder.Services.AddSession();
 
 builder.Services.AddMvc(options =>
 {
-    options.Filters.Add(typeof(TokenValidationFilter));
+    //    options.Filters.Add(typeof(TokenValidationFilter));
 });
 
 #endregion

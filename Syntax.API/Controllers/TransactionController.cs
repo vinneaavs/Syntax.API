@@ -78,7 +78,7 @@ namespace Syntax.API.Controllers
             try
             {
                 _transactionDao.Operation(transaction, OperationType.Deleted);
-                return Ok($"Transaction {transaction.Id} - {transaction.Description} Deletado com Sucesso");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace Syntax.API.Controllers
                 var transaction = _transactionDao.FindById(id);
 
                 _transactionDao.Operation(transaction!, OperationType.Deleted);
-                return Ok("Deletado com sucesso !");
+                return Ok();
             }
             catch (Exception ex)
             {

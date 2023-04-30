@@ -68,7 +68,7 @@ namespace Syntax.API.Controllers
                 var portfolio = _portifolioDao.FindById(id);
 
                 _portifolioDao.Operation(portfolio!, OperationType.Deleted);
-                return Ok("Deletado com sucesso !");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace Syntax.API.Controllers
             try
             {
                 _portifolioDao.Operation(portfolio, OperationType.Deleted);
-                return Ok("Deletado com sucesso!");
+                return Ok();
             }
             catch (Exception ex)
             {

@@ -20,7 +20,7 @@ namespace Syntax.API.Controllers
             _applicationDbContext = _context;
 
         }
-        [HttpGet("{idUser}")]
+        [HttpGet("user/{idUser}")]
         public IEnumerable<Portfolio> GetPortfoliosByUser(string idUser)
         {
             var list = _applicationDbContext.Portfolios.Where(x => x.IdUser == idUser).ToList();

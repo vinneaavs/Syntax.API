@@ -180,11 +180,46 @@ namespace Syntax.API.Controllers
             return Ok(totalPurchasePrice);
         }
 
-        [HttpGet("TransactionByClassUser/{idUser}")]
-        public IActionResult GetTransactionByClassByUser(string idUser)
+        /* ------------------------------------------------------------------------------------------------------------------ */
+
+        [HttpGet("UserBalanceLastThreeMonths/{idUser}")]
+        public IActionResult GetUserBalanceLastThreeMonths(string idUser)
+        {
+            var today = DateTime.Today;
+            var threeMonthsAgo = today.AddMonths(-3);
+
+            var transactions = _context.Transactions
+                .Include(t => t.TransactionClassNavigation)
+                .Where(t => t.Date >= threeMonthsAgo && t.Date <= today && t.IdUser == idUser)
+                .ToList();
+
+            var groupedTransactions = transactions
+                .GroupBy(t => new { t.Date.Year, t.Date.Month })
+                .Select(g => new
+                {
+                    Month = new DateTime(g.Key.Year, g.Key.Month, 1),
+                    Expenses = g.Where(t => t.Type == EventTypeTransaction.Despesas).Sum(t => t.Value),
+                    Revenue = g.Where(t => t.Type == EventTypeTransaction.Renda).Sum(t => t.Value)
+                })
+                .OrderBy(t => t.Month)
+                .ToList();
+
+            var balances = groupedTransactions
+                .Select(t => new
+                {
+                    Month = t.Month.ToString("MMMM"),
+                    Expenses = t.Expenses,
+                    Revenue = t.Revenue
+                })
+                .ToList();
+
+            return Ok(balances);
+        }
+
+        [HttpGet("ExpensePercentageByClassUser/{idUser}")]
+        public IActionResult GetExpensePercentageByClassByUser(string idUser)
         {
             var classes = _context.TransactionClasses.ToList();
-            var transactions = _context.Transactions.ToList();
 
             var transactionsByClass = classes
                 .Where(c => _context.Transactions
@@ -197,13 +232,12 @@ namespace Syntax.API.Controllers
                         .ToList()
                 });
 
-
-            decimal totalExpenses = transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0);
+            decimal totalIncome = transactionsByClass.Sum(tc => tc.Transactions.Sum(t => t.Value));
             var result = transactionsByClass.Select(tc => new
             {
                 TransactionClass = tc.TransactionClass,
-                ClassBalance = tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0),
-                ClassPercentage = (totalExpenses == 0) ? 0 : ((tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0) * -1) / (totalExpenses * -1) * 100)
+                ClassBalance = tc.Transactions.Sum(t => t.Value),
+                ClassPercentage = (totalIncome == 0) ? 0 : ((tc.Transactions.Sum(t => t.Value) * 1) / totalIncome * 100)
             }).ToList();
 
             return Ok(result);

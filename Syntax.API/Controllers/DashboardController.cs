@@ -143,7 +143,7 @@ namespace Syntax.API.Controllers
                 TypePercentages = tc.Transactions.GroupBy(t => t.TransactionClassNavigation.Name).Select(g => new
                 {
                     Type = g.Key,
-                    Percentage = ((tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value) * -1) / (totalExpenses * -1) * 100)
+                    Percentage = (totalExpenses == 0) ? 0 : ((tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0) * -1) / (totalExpenses * -1) * 100)
                 }).ToList()
             }).ToList();
 

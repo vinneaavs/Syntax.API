@@ -108,8 +108,6 @@ namespace Syntax.API.Controllers
             return Ok(result);
         }
 
-
-
         [HttpGet("TransactionByClassAndType")]
         public IActionResult GetTransactionByClassAndType()
         {

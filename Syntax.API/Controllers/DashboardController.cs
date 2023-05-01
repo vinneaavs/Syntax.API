@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ProjectModel;
 using Syntax.API.Context;
 using Syntax.API.Models;
 using Syntax.Auth.Data;
@@ -128,6 +129,7 @@ namespace Syntax.API.Controllers
               .ToList()
             });
 
+            decimal totalExpenses = transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0);
             var result = transactionsByClass.Select(tc => new
             {
                 TransactionClass = tc.TransactionClass,
@@ -143,54 +145,172 @@ namespace Syntax.API.Controllers
                 TypePercentages = tc.Transactions.GroupBy(t => t.TransactionClassNavigation.Name).Select(g => new
                 {
                     Type = g.Key,
-                    Percentage = ((double)g.Count() / tc.Transactions.Count()).ToString("P")
+                    Percentage = ((tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value) * -1) / (totalExpenses * -1) * 100)
                 }).ToList()
             }).ToList();
 
             return Ok(result);
         }
 
+        /* ------------------------------------------------------------------------------------------------------------------ */
+
+        [HttpGet("UserBalanceCurrentMonth/{idUser}")]
+        public IActionResult GetUserBalanceCurrentMonth(string idUser)
+        {
+            var today = DateTime.Today;
+            var transactions = _context.Transactions
+                .Include(t => t.TransactionClassNavigation)
+                .Where(t => t.Date.Year == today.Year && t.Date.Month == today.Month && t.IdUser == idUser)
+                .ToList();
+
+            decimal balance = transactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value);
+
+            return Ok(balance);
+        }
+
+        [HttpGet("UserNetWorth/{idUser}")]
+        public IActionResult GetUserNetWorth(string idUser)
+        {
+            var assets = _context.AssetPortfolios
+                .Include(ap => ap.PortFolioNavigation)
+                .Where(ap => ap.PortFolioNavigation!.IdUser == idUser)
+                .ToList();
+
+            decimal totalPurchasePrice = assets.Sum(ap => ap.PurchasePrice);
+
+
+            return Ok(totalPurchasePrice);
+        }
+
         [HttpGet("TransactionByClassUser/{idUser}")]
         public IActionResult GetTransactionByClassByUser(string idUser)
         {
-
-            //var today = DateTime.Today;
-            //var lastWeek = today.AddDays(-6);
             var classes = _context.TransactionClasses.ToList();
             var transactions = _context.Transactions.ToList();
 
-            var transactionsByClass = classes.Select(c => new
-            {
-                TransactionClass = c.Name,
-                TransactionClassDescription = c.Description,
-                Transactions = _context.Transactions
-                    .Where(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser)
-              .ToList()
-            });
+            var transactionsByClass = classes
+                .Where(c => _context.Transactions
+                    .Any(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser && t.Type == EventTypeTransaction.Despesas))
+                .Select(c => new
+                {
+                    TransactionClass = c.Name,
+                    Transactions = _context.Transactions
+                        .Where(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser && t.Type == EventTypeTransaction.Despesas)
+                        .ToList()
+                });
 
+
+            decimal totalExpenses = transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0);
             var result = transactionsByClass.Select(tc => new
             {
                 TransactionClass = tc.TransactionClass,
-                TransactionClassDescription = tc.TransactionClassDescription,
-                TypeQuantity = tc.Transactions.GroupBy(t => t.Type).Select(g => new
-                {
-                    Type = g.Key,
-                    Quantity = g.Count(),
-                    Balance = g.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value)
-                }).ToList(),
-                TotalQuantity = tc.Transactions.Count(),
-                TotalBalance = tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Renda ? t.Value : -t.Value),
-                TypePercentages = tc.Transactions.GroupBy(t => t.TransactionClassNavigation.Name).Select(g => new
-                {
-                    Type = g.Key,
-                    Percentage = ((double)g.Count() / tc.Transactions.Count()).ToString("P")
-                }).ToList()
+                ClassBalance = tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0),
+                ClassPercentage = (totalExpenses == 0) ? 0 : ((tc.Transactions.Sum(t => t.Type == EventTypeTransaction.Despesas ? -t.Value : 0) * -1) / (totalExpenses * -1) * 100)
             }).ToList();
 
-                return Ok(result);
+            return Ok(result);
+        }
+
+        [HttpGet("IncomePercentageByClassUser/{idUser}")]
+        public IActionResult GetIncomePercentageByClassByUser(string idUser)
+        {
+            var classes = _context.TransactionClasses.ToList();
+
+            var transactionsByClass = classes
+                .Where(c => _context.Transactions
+                    .Any(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser && t.Type == EventTypeTransaction.Renda))
+                .Select(c => new
+                {
+                    TransactionClass = c.Name,
+                    Transactions = _context.Transactions
+                        .Where(t => t.TransactionClassNavigation!.Id == c.Id && t.IdUser == idUser && t.Type == EventTypeTransaction.Renda)
+                        .ToList()
+                });
+
+            decimal totalIncome = transactionsByClass.Sum(tc => tc.Transactions.Sum(t => t.Value));
+            var result = transactionsByClass.Select(tc => new
+            {
+                TransactionClass = tc.TransactionClass,
+                ClassBalance = tc.Transactions.Sum(t => t.Value),
+                ClassPercentage = (totalIncome == 0) ? 0 : ((tc.Transactions.Sum(t => t.Value) * 1) / totalIncome * 100)
+            }).ToList();
+
+            return Ok(result);
+        }
 
 
+        [HttpGet("PortfolioEvolutionByUser/{idUser}")]
+        public IActionResult GetPortfolioEvolutionByUser(string idUser)
+        {
+            var currentDate = DateTime.Now;
+            var result = new List<object>();
+            decimal accumulatedPurchasePrice = 0;
 
+            var assetPortfolios = _context.AssetPortfolios
+                .Include(ap => ap.PortFolioNavigation)
+                .Include(ap => ap.AssetNavigation)
+                .ThenInclude(a => a!.AssetClassNavigation)
+                .Where(ap => ap.PortFolioNavigation!.IdUser == idUser)
+                .AsEnumerable() // adicionado para forçar a execução no lado do cliente
+                .GroupBy(ap => ap.Date.Day)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            foreach (var assetPortfolio in assetPortfolios)
+            {
+                decimal purchasePrice = assetPortfolio.Sum(ap => ap.PurchasePrice);
+                accumulatedPurchasePrice += purchasePrice;
+
+                result.Add(new
+                {
+                    day = assetPortfolio.Key,
+                    purchasePrice = accumulatedPurchasePrice
+                });
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("AssetByClassByUser/{idUser}")]
+        public IActionResult GetAssetByClassByUser(string idUser)
+        {
+            var assetPortfolios = _context.AssetPortfolios
+                .Include(ap => ap.PortFolioNavigation)
+                .Include(ap => ap.AssetNavigation)
+                    .ThenInclude(a => a!.AssetClassNavigation)
+                .Where(ap => ap.PortFolioNavigation!.IdUser == idUser)
+                .ToList();
+
+            var result = assetPortfolios
+                .GroupBy(ap => ap.AssetNavigation!.IdAssetClass)
+                .Select(g => new
+                {
+                    AssetClassName = g.First().AssetNavigation!.AssetClassNavigation!.Name,
+                    Amount = g.Sum(ap => ap.PurchasePrice)
+                });
+
+            return Ok(result);
+        }
+
+        [HttpGet("AssetByPortfolioByUser/{idUser}")]
+        public IActionResult GetAssetByPortfolioByUser(string idUser)
+        {
+            var assetPortfolios = _context.AssetPortfolios
+                .Include(ap => ap.PortFolioNavigation)
+                .Include(ap => ap.AssetNavigation)
+                .ThenInclude(a => a!.AssetClassNavigation)
+                .Where(ap => ap.PortFolioNavigation!.IdUser == idUser)
+                .ToList();
+
+            var result = assetPortfolios
+                .GroupBy(ap => new { ap.IdPortfolio })
+                .Select(g => new
+                {
+                    PortfolioName = g.First().PortFolioNavigation!.Name,
+                    Amount = g.Sum(ap => ap.PurchasePrice)
+                });
+
+            return Ok(result);
         }
 
 
